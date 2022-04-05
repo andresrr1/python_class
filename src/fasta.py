@@ -1,3 +1,22 @@
+#'''NAME
+#Generador de fasta
+#VERSION
+#1.1
+#AUTHOR
+#Andres Rivera Ramirez
+
+#DESCRIPTION
+#Se genera un archivo un fasta con la secuencia dentro de un archivo de texto llamado dna.txt
+#CATEGORY
+
+#USAGE
+#Se requiere de un archivo dna.txt dentro de una carpeta data
+#ARGUMENTS
+
+#SEE ALSO
+
+
+#'''
 #Se obtiene la ruta del archivo
 my_file_name = ("..\data\dna.txt")
 #Se abre el archivo para lectura

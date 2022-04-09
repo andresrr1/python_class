@@ -12,6 +12,12 @@ Cuenta las repeticiones de cada nucleotido en una secuencia introducida desde el
 fasta.py
 Crea un archivo fasta con la secuencia d eun archivo de texto plano.
 
+noadapters.py
+Elimina las secuencias adaptadoras de ciertas secuencias dadas en un archivo y las escribe en un archivo nuevo.
+
+crear_fasta
+Toma una serie de tres secuencias de un archivo y las convierte a formato fasta para después guardarlas en otro archivo.
+
 
 
 

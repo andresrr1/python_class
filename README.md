@@ -18,6 +18,9 @@ Elimina las secuencias adaptadoras de ciertas secuencias dadas en un archivo y l
 crear_fasta
 Toma una serie de tres secuencias de un archivo y las convierte a formato fasta para después guardarlas en otro archivo.
 
+piedra_papel_tijera
+Juego de piedra papel o tijera con un ciclo while y estrcuturas if, se introduce el nombre del usuario y después se introduce el movimiento deseado de entre los tres posibles. La computadora obtendra su movimiento a traves de una funcion generadora de numeros random y la comparara con la del usuario para declarar el resultado de la partida. Se preguntara despues si se desea jugar otra vez.
+
 
 
 

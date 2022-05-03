@@ -1,43 +1,44 @@
-'''
-NAME
-    fasta files
-VERSION
-    1.0
-AUTHOR
+'''NAME
+    crear_fasta
+    VERSION
+    2.0
+    AUTHOR
     Andres Rivera Ramirez
 
-DESCRIPTION
+    DESCRIPTION
     Convertir las secuencias en formato fasta
-CATEGORY
+    CATEGORY
 
-USAGE
+    USAGE
 
-ARGUMENTS
+    ARGUMENTS
 
-SEE ALSO
+    SEE ALSO
 
 
     '''
 
 # Abrir el archivo con las secuencias
-dna_sequences = ("..\data\dna_sequences.txt")
-archivoseq = open(dna_sequences, 'r')
-secuencias = archivoseq.readlines()
-archivoseq.close()
-
+try:
+    dna_sequences = (".\data\dna_sequences.txt")
+    archivoseq = open(dna_sequences)
+    secuencias = archivoseq.readlines()
+    archivoseq.close()
 # Guardar en variables los caracteres que quiero borrar
-guiones = "-"
-alt = "—"
-
-# Utilizar replace para eliminar los caracteres no deseados
-secuencias[2] = secuencias[2].replace(guiones, "")
-secuencias[2] = secuencias[2].replace(alt, "")
-# Intenta meter esto dentro del for para que vuleva más general tu código
-
+    guiones = "-"
+    alt = "—"
 # Crear un archivo fasta en append
-dna_fasta = open("dna_sequences.fasta", "w") # Ten mucho cuidado con append, si corres dos veces tu programa habrán el doble de secuencias
+    dna_fasta = open(".\myresults\dna_sequences.fasta", "w")
 # Escribir cada secuencia en formato fasta en el archivo
-for seq in secuencias:    
-    dna_fasta.write("> " + seq[:5] + "\n" + seq[8:])
-    
-dna_fasta.close()
+    for seq in secuencias:
+        seq = seq.replace(guiones, "")
+        seq = seq.replace(alt, "")
+        seq = seq.replace('a', 'A')
+        seq = seq.replace('g', 'G')
+        seq = seq.replace('t', 'T')
+        seq = seq.replace('c', 'C')
+        dna_fasta.write(">" + seq[:5] + "\n" + seq[8:])
+    dna_fasta.close()
+    # En caso de que el archivo no se encuentre en la carpeta o no sea posible accesarlo
+except IOError as ex:
+    print("No es posible abrir el archivo: \n" + ex.strerror)

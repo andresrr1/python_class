@@ -69,8 +69,11 @@ while True:
             print(mensaje_d)
         else:
             print(mensaje_v)
-            # Se pregunta si se jugara otra vez, sino se rommpe el ciclo while
+         # Se detiene el programa si se han jugado 100 partidas
+        if(i >= 100):
+            raise ValueError("Creo que hemos jugado demasiado, descansa")
             
+            # Se pregunta si se jugara otra vez, sino se rommpe el ciclo while
     jugar_de_nuevo = input("¿Quieres jugar de nuevo?\ny/n\n")
     if(jugar_de_nuevo.lower() != "y"):
         break

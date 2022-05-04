@@ -1,7 +1,7 @@
 '''NAME
 piedra_papel_tijera.py
 VERSION
-1.0
+1.1
 AUTHOR
 Andres Rivera Ramirez.
 

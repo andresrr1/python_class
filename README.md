@@ -3,8 +3,8 @@
 Este repositorio contiene las notas, programas y otros productos relacionados con la materia de python
 En este momento contiene tres programas documentados. Estos son:
 
-AT y CG porcentaje.py
-Programa que obtiene el porcentaje de AT y CG de una secuencia obtenida desde un archivo dada su ruta absoluta, en este repositorio se puede correr con el archivo de dna.txt que se encuentra dentro de la carpeta  data.
+AT _y _CG _porcentaje.py
+Programa que obtiene el porcentaje de AT y CG de una secuencia obtenida desde un archivo dada su ruta absoluta pasada como el argumento -i en linea de comandos, en este repositorio se puede correr con el archivo de dna.txt que se encuentra dentro de la carpeta  data. Además tambien puede escribir el resultado del programa en un archivo si se da su ruta absoluta pasada por el argumento -o.
 
 cuenta de nucleotidos.py 
 Cuenta las repeticiones de cada nucleotido en una secuencia introducida desde el teclado.

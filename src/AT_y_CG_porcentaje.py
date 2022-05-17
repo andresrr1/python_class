@@ -1,21 +1,34 @@
 '''NAME
 AT_y_CG porcentaje
+
 VERSION
-1.2
+1.3
+
 AUTHOR
 Andres Rivera Ramirez
+
 DESCRIPTION
-Programa para calcular el porcentaje de AT y CG de una secuencia dada por un archivo del cual se solicita su ruta como argumento a traves de la linea de comandos
+Programa para calcular el porcentaje de AT y CG de una secuencia
+dada por un archivo del cual se solicita su ruta como argumento 
+a traves de la linea de comandos
+
 CATEGORY
+
 USAGE
-Se inserta la ruta del archivo de texto plano que contiene la secuencia a analizar como el argumento -i y el archivo de salida en el que se escribira el resultado como
-el argumento -o
+    python src/AT_y_CG_porcentaje.py [-h] -i El path del archivo de entrada
+                             [-o OUTPUT]
+
 ARGUMENTS
+  -h, --help            show this help message and exit
+  -i El path del archivo de entrada, --input El path del archivo de entrada
+                        Archivo de secuencias de DNA
+  -o OUTPUT, --output OUTPUT
+                        El path del archivo de salida
+
 SEE ALSO
 '''
 
 import argparse
-from email import parser
 
 # Estos son los argumentos que requiere el programa, son paths a archivos de texto
 parser = argparse.ArgumentParser(
@@ -68,5 +81,6 @@ if(args.output):
         archivo_porcentaje.write(str(AT_percentage))
         archivo_porcentaje.write("\nCG:\n")
         archivo_porcentaje.write(str(CG_percentage))
+        archivo_porcentaje.close()
     except IOError as ex:
         print("No es posible crear el archivo de salida", ex.strerror)

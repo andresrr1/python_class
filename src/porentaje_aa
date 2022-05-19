@@ -1,0 +1,57 @@
+'''NAME
+porcentaje_aa
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+
+DESCRIPTION
+Este programa obtiene el porcentaje de un aminoacido en una secuencia dada, ambos introducidos a traves de input
+CATEGORY
+Se lee la secuencia  y el aminoacido desde el teclado
+USAGE
+
+ARGUMENTS
+
+SEE ALSO
+
+
+'''
+
+
+# Se obtiene el porcentaje de aminoacido con esta funcion
+def get_aa_content(secuencia_aa, contar_aa):
+    secuencia_aa = secuencia_aa.upper()
+    contar_aa = contar_aa.upper()
+    len_secuencia = len(secuencia_aa)
+    contenido_aa = secuencia_aa.count(contar_aa)
+    porcentaje = ((contenido_aa / len_secuencia) * 100)
+    return(porcentaje)
+
+
+# Se obtienen la secuencia y el aminoacido a buscar desde el teclado
+secuencia_aa = input("Introduzca la secuencia de aminoacidos")
+contar_aa = input(
+    "Introduzca el aminoácido del que requiere sacar el porcentaje en la secuencia")
+
+# Se verifica que los datos sean validos para la funcion
+if(any(char.isdigit() for char in secuencia_aa)):
+    raise ValueError("La secuencia contiene uno o mas numeros")
+if(len(contar_aa) > 1):
+    raise ValueError("Por favor, introduzca solo un aminoacido a buscar")
+if(contar_aa.isdigit()):
+    raise ValueError("Introduzca un aminoacido valido")
+
+# Se llama a la funcion y se guarda el return en una variable para despues imprimirla
+porcentaje_aa = get_aa_content(secuencia_aa, contar_aa)
+print(
+    f"El porcentaje de {contar_aa} en la secuencia introducida es de: \n {porcentaje_aa}%")
+
+# Testing section
+try:
+    assert get_aa_content("MSRSLLLRFLLFLLLLPPLP", "M") == 5
+    assert get_aa_content("MSRSLLLRFLLFLLLLPPLP", "r") == 10
+    assert get_aa_content("msrslllrfllfllllpplp", "L") == 50
+    assert get_aa_content("MSRSLLLRFLLFLLLLPPLP", "Y") == 0
+except AssertionError:
+    print("Algo salio mal")

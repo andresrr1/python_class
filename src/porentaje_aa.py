@@ -1,18 +1,24 @@
-'''NAME
-porcentaje_aa
+'''
+NAME
+    porcentaje_aa
 VERSION
-1.1
+    1.2
 AUTHOR
-Andres Rivera Ramirez
+    Andres Rivera Ramirez
 
 DESCRIPTION
-Este programa obtiene el porcentaje de un aminoacido en una secuencia dada, ambos introducidos como argumentos desde la terminal
+    Este programa obtiene el porcentaje de un aminoacido en una secuencia dada, 
+    ambos introducidos como argumentos desde la terminal
 CATEGORY
-Se pasan la secuencia y aminoacidos como argumentos
+    aminoacids
 USAGE
-
+    python src/porentaje_aa.py [-h] -i La secuencia de aminoacidos requerida -a AMINOACIDO
 ARGUMENTS
-
+   -h, --help            show this help message and exit
+  -i La secuencia de aminoacidos requerida, --input La secuencia de aminoacidos requerida
+                        Secuencia de aminoacidos
+  -a AMINOACIDO, --aminoacido AMINOACIDO
+                        El aminoacido a buscar
 SEE ALSO
 
 
@@ -39,10 +45,13 @@ args = parser.parse_args()
 
 
 def get_aa_content(secuencia_aa, contar_aa):
+    
     secuencia_aa = str(args.input)
     contar_aa = args.aminoacido
+    
     secuencia_aa = secuencia_aa.upper()
     contar_aa = contar_aa.upper()
+    
     # Se verifica que los datos sean validos para la funcion
     if(any(char.isdigit() for char in secuencia_aa)):
         raise ValueError("La secuencia contiene uno o mas numeros")
@@ -54,6 +63,7 @@ def get_aa_content(secuencia_aa, contar_aa):
     len_secuencia = len(secuencia_aa)
     contenido_aa = secuencia_aa.count(contar_aa)
     porcentaje = ((contenido_aa / len_secuencia) * 100)
+    
     return(porcentaje)
 
 

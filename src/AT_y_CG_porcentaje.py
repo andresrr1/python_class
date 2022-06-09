@@ -52,14 +52,6 @@ def encontrar_start_stop(dna):
         match = re.search("TAC", dna)
         print("La secuencia contiene un codon de inicio")
         print(match.span())
-    if(re.search("UA(A|G)", dna)):
-        print("La secuencia contiene un codon de paro")
-        match = re.search("UA(A|G)", dna)
-        print(match.span())
-    if(re.search("UGA", dna)):
-        print("La secuencia contiene un codon de paro")
-        match = re.search("UGA", dna)
-        print(match.span())
     return(1)
 
 

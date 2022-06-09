@@ -42,6 +42,7 @@ parser.add_argument("-o", "--output",
 args = parser.parse_args()
 
 
+#Funcion que encuentra codones de paro e inicio e indica sus posiciones.
 def encontrar_start_stop(dna):
     if(re.search("ATG", dna)):
         match = re.search("ATG", dna)

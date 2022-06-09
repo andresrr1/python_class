@@ -1,34 +1,29 @@
 '''NAME
 AT_y_CG porcentaje
-
 VERSION
-1.3
-
+1.4
 AUTHOR
 Andres Rivera Ramirez
-
 DESCRIPTION
 Programa para calcular el porcentaje de AT y CG de una secuencia
 dada por un archivo del cual se solicita su ruta como argumento 
-a traves de la linea de comandos
-
+a traves de la linea de comandos, ademas busca codones de paro e inicio e imprimime
+las posiciones en que se encuentran.
 CATEGORY
-
 USAGE
     python src/AT_y_CG_porcentaje.py [-h] -i El path del archivo de entrada
                              [-o OUTPUT]
-
 ARGUMENTS
   -h, --help            show this help message and exit
   -i El path del archivo de entrada, --input El path del archivo de entrada
                         Archivo de secuencias de DNA
   -o OUTPUT, --output OUTPUT
                         El path del archivo de salida
-
 SEE ALSO
 '''
 
 import argparse
+import re
 
 # Estos son los argumentos que requiere el programa, son paths a archivos de texto
 parser = argparse.ArgumentParser(
@@ -45,6 +40,26 @@ parser.add_argument("-o", "--output",
 
 
 args = parser.parse_args()
+
+
+def encontrar_start_stop(dna):
+    if(re.search("ATG", dna)):
+        match = re.search("ATG", dna)
+        print("La secuencia contiene un codon de inicio")
+        print(match.span())
+    if(re.search("TAC", dna)):
+        match = re.search("TAC", dna)
+        print("La secuencia contiene un codon de inicio")
+        print(match.span())
+    if(re.search("UA(A|G)", dna)):
+        print("La secuencia contiene un codon de paro")
+        match = re.search("UA(A|G)", dna)
+        print(match.span())
+    if(re.search("UGA", dna)):
+        print("La secuencia contiene un codon de paro")
+        match = re.search("UGA", dna)
+        print(match.span())
+    return(1)
 
 
 # Se abre el archivo para leer
@@ -84,3 +99,5 @@ if(args.output):
         archivo_porcentaje.close()
     except IOError as ex:
         print("No es posible crear el archivo de salida", ex.strerror)
+
+m = encontrar_start_stop(dna)

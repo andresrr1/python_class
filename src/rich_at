@@ -1,0 +1,79 @@
+'''NAME
+rich_AT
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+DESCRIPTION
+Programa que encuentra subsecuencias conteniendo AT en una secuencia dada por un archivo y las imprime a la pantalla
+CATEGORY
+USAGE
+    python src/rich_at [-h] -f La ruta del archivo de entrada
+                            
+ARGUMENTS
+  -h, --help            show this help message and exit
+  -f Ruta del archivo de entrada
+                        Archivo de secuencias de DNA
+  -s
+                        EL tamaño minimo de la subsecuencia
+SEE ALSO
+'''
+
+import argparse
+import re
+
+# Se crean los argumentos para el archivo de entrada y el tamaño  minimo
+parser = argparse.ArgumentParser(
+    description=" Este programa busca una region rica en AT como una subsecuencia  de una secuencia  dada")
+
+parser.add_argument("-f",
+                    metavar="El path del archivo de entrada",
+                    help="La ruta del archivo de secuencia de DNA",
+                    required=True)
+parser.add_argument("-s",
+                    metavar="Tamaño de la region minima rica en AT",
+                    help="El numero de bases minimo que se considerara una region rica en AT",
+                    required=True)
+
+args = parser.parse_args()
+
+# Se intenta abrir el archivo dada su ruta, de no ser posible se notifica
+try:
+    archivo = open(args.f)
+    secuencia = archivo.read()
+    archivo.close()
+except IOError as ex:
+    print("No es posible encontrar el archivo: \n" + ex.strerror)
+
+num = args.s
+
+
+# Funcion que encuentra caracteres diferentes de ATCG y notifica al usuario dando su posicion
+def encontrarNs(secuencia):
+    i = 0
+    bandera = 1
+    for char in secuencia:
+        i += 1
+        if(char != "A" and char != "T" and char != "C" and char != "G"):
+            bandera = 0
+            print("Se ha encontrado el siguiente caracter no permitido en el archivo:\n")
+            print(i, "\n")
+            print(char)
+    return(bandera)
+
+# Funcion que encuentra las subsecuencias que contienen AT y las imprime con sus posiciones
+
+
+def encontrar_region(secuencia, n):
+    regiones = re.finditer(r"[A|T]{" + num + ",}", secuencia)
+    for region in regiones:
+        type(region)
+        subsecuencia = region.group()
+        span = region.span()
+        print(subsecuencia, "\n", span)
+
+
+# Se llama a ambas funciones
+check = encontrarNs(secuencia)
+if(check):
+    resultado = encontrar_region(secuencia, args.s)

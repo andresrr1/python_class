@@ -9,7 +9,7 @@ Programa que encuentra subsecuencias conteniendo AT en una secuencia dada por un
 CATEGORY
 USAGE
     python src/rich_at [-h] -f La ruta del archivo de entrada
-                            
+
 ARGUMENTS
   -h, --help            show this help message and exit
   -f Ruta del archivo de entrada
@@ -40,7 +40,7 @@ args = parser.parse_args()
 # Se intenta abrir el archivo dada su ruta, de no ser posible se notifica
 try:
     archivo = open(args.f)
-    secuencia = archivo.read()
+    secuencia = archivo.read().rstrip('\n').upper()
     archivo.close()
 except IOError as ex:
     print("No es posible encontrar el archivo: \n" + ex.strerror)
@@ -50,21 +50,38 @@ num = args.s
 
 # Funcion que encuentra caracteres diferentes de ATCG y notifica al usuario dando su posicion
 def encontrarNs(secuencia):
-    i = 0
-    bandera = 1
-    for char in secuencia:
-        i += 1
-        if(char != "A" and char != "T" and char != "C" and char != "G"):
-            bandera = 0
-            print("Se ha encontrado el siguiente caracter no permitido en el archivo:\n")
-            print(i, "\n")
-            print(char)
+    '''
+    +++ Objectivo +++
+    -- Encontrar todos los caracteres no permitidos dentro de una secuencia de ADN
+    +++ Parametros +++
+    -- ::param:: secuencia (String) -> Secuencia de nucleotidos que sera analizada
+    +++ Return +++
+    -- bandera (boolean) -> Variable de dos estados que indica si se encuentra o no
+                            un caracter invalido en la secuencia
+    '''
+    bandera = True
+    errores = re.finditer("[^ATGC]+", secuencia)
+    num_errores = len([*re.finditer("[^ATGC]+", secuencia)])
+    if num_errores > 0:
+        bandera = False
+        for error in errores:
+            mensaje = "Se encontro el caracter invalido: {} en la posición {}".format(error.group(),error.span())
+            print(mensaje)
     return(bandera)
 
 # Funcion que encuentra las subsecuencias que contienen AT y las imprime con sus posiciones
 
 
 def encontrar_region(secuencia, n):
+    '''
+    +++ Objectivo +++
+    -- Encontrar las regiones ricas en AT de acuerdo con la cantidad especificada
+    +++ Parametros +++
+    -- ::param:: secuencia (String) -> Secuencia de ADN que sera analizada
+    -- ::param:: n (int) -> Numero de ocurrencias que se busca
+    +++ Return +++
+    -- No regresa un valor, es un procedimiento
+    '''
     regiones = re.finditer(r"[A|T]{" + num + ",}", secuencia)
     for region in regiones:
         type(region)

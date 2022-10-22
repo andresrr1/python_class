@@ -1,0 +1,68 @@
+'''NAME
+Obtener_mayor_prot
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+DESCRIPTION
+Programa para obtener el mayor producto proteico de los 6 orfs de una secuencia.
+CATEGORY
+USAGE
+    
+                        
+ARGUMENTS
+None
+SEE ALSO
+'''
+
+import Bio.Seq
+import re
+from Bio import SeqUtils
+from Bio.Seq import Seq
+
+seq = Seq("AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG")
+
+# función para obtener el mayor producto proteico
+
+
+def obtener_mayor_orf(secuencia):
+    # se obtiene la secuencia reversa complementaria
+    seq_comp = secuencia.reverse_complement()
+
+    # se crean los 6 orfs disponibles
+    orf1 = secuencia
+    orf2 = secuencia[1:]
+    orf3 = secuencia[2:]
+    orf4 = seq_comp
+    orf5 = seq_comp[1:]
+    orf6 = seq_comp[2:]
+    start = "ATG"
+
+    l_orfs = [orf1, orf2, orf3, orf4, orf5, orf6]
+
+    p_inicio = []
+    seq_ftr = []
+
+    # Por cada orf se guardan las posiciones en las que existe un codon de inicio
+    for i in range(0, 6):
+        p_inicio.append(SeqUtils.nt_search(str(l_orfs[i]), start))
+
+    # Por cada orf se obtienen las subsecuencias que comprenden la secuencia desde el codonn de inicio dado
+    for i in range(0, 6):
+        for j in range(1, len(p_inicio[i])):
+            subseq = ""
+            temp = p_inicio[i][j]
+            subseq = l_orfs[i][temp:]
+            seq_ftr.append(subseq)
+
+    seq_tr = []
+    # Se traducen todas las subsecuencias a aminoacidos
+    for i in range(0, len(seq_ftr)):
+        seq_tr.append(seq_ftr[i].translate(to_stop=True))
+
+    # Se obtiene la secuencia de aminoacidos mas largo
+    resultado = max(seq_tr, key=len)
+    return(resultado)
+
+
+print(obtener_mayor_orf(seq))

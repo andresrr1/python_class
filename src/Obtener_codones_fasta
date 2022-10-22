@@ -1,0 +1,127 @@
+'''NAME
+Obtener_codones_fasta
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+DESCRIPTION
+Programa para obtener todos los codones de un archivo fasta e imprimirlos en dicho formato, ademas, prueba la funcion obtener_mayor_orf
+en las secuencias de un archivo fasta
+CATEGORY
+USAGE
+                        
+ARGUMENTS
+None
+SEE ALSO
+'''
+
+from Bio import SeqIO
+from Bio import Seq
+import re
+from Bio import SeqUtils
+
+# Funcion a probar
+
+
+def obtener_mayor_orf(secuencia):
+    seq_comp = secuencia.reverse_complement()
+
+    orf1 = secuencia
+    orf2 = secuencia[1:]
+    orf3 = secuencia[2:]
+    orf4 = seq_comp
+    orf5 = seq_comp[1:]
+    orf6 = seq_comp[2:]
+    start = "ATG"
+
+    l_orfs = [orf1, orf2, orf3, orf4, orf5, orf6]
+
+    p_inicio = []
+    seq_ftr = []
+
+    for i in range(0, 6):
+        p_inicio.append(SeqUtils.nt_search(str(l_orfs[i]), start))
+
+    for i in range(0, 6):
+        for j in range(1, len(p_inicio[i])):
+            subseq = ""
+            temp = p_inicio[i][j]
+            subseq = l_orfs[i][temp:]
+            seq_ftr.append(subseq)
+
+    seq_tr = []
+    for i in range(0, len(seq_ftr)):
+        seq_tr.append(seq_ftr[i].translate(to_stop=True))
+
+    resultado = max(seq_tr, key=len)
+    return(resultado)
+
+
+# Se convierte el archivo fasta a un diccionario
+f_dict = SeqIO.to_dict(SeqIO.parse(
+    r'C:\Users\andre\OneDrive\Documentos\python_class\data\seq.nt.fa.txt', 'fasta'))
+l_codones = []
+
+# Este proceso se repetira para cada orf, se divide cada secuencia en codones y se imprime cada codon de la lista junto con su indicador, el numero de codon y su orf correspondiente.
+for secuencia in f_dict:
+
+    l_codones.append(re.findall(r'(.{3})', str(f_dict[secuencia].seq)))
+    for lista in l_codones:
+        i = 1
+        for codon in lista:
+            print('>' + secuencia + '|codon' + str(i) + '|orf1')
+            print(codon)
+            i += 1
+
+for secuencia in f_dict:
+
+    l_codones.append(re.findall(r'(.{3})', str(f_dict[secuencia].seq[1:])))
+    for lista in l_codones:
+        i = 1
+        for codon in lista:
+            print('>' + secuencia + '|codon' + str(i) + '|orf2')
+            print(codon)
+            i += 1
+for secuencia in f_dict:
+
+    l_codones.append(re.findall(r'(.{3})', str(f_dict[secuencia].seq[2:])))
+    for lista in l_codones:
+        i = 1
+        for codon in lista:
+            print('>' + secuencia + '|codon' + str(i) + '|orf3')
+            print(codon)
+            i += 1
+for secuencia in f_dict:
+
+    l_codones.append(re.findall(r'(.{3})', str(
+        Seq.reverse_complement(f_dict[secuencia].seq))))
+    for lista in l_codones:
+        i = 1
+        for codon in lista:
+            print('>' + secuencia + '|codon' + str(i) + '|orf4')
+            print(codon)
+            i += 1
+for secuencia in f_dict:
+
+    l_codones.append(re.findall(r'(.{3})', str(
+        Seq.reverse_complement(f_dict[secuencia].seq[1:]))))
+    for lista in l_codones:
+        i = 1
+        for codon in lista:
+            print('>' + secuencia + '|codon' + str(i) + '|orf5')
+            print(codon)
+            i += 1
+for secuencia in f_dict:
+
+    l_codones.append(re.findall(r'(.{3})', str(
+        Seq.reverse_complement(f_dict[secuencia].seq[2:]))))
+    i = 1
+    for codon in lista:
+        print('>' + secuencia + '|codon' + str(i) + '|orf6')
+        print(codon)
+        i += 1
+
+
+# Se llama a la funcion por cada secuencia en el diccionario fasta
+for seq in f_dict:
+    print(obtener_mayor_orf(f_dict[seq].seq))

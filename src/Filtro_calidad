@@ -1,0 +1,64 @@
+'''NAME
+Filtro_calidad
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+DESCRIPTION
+Programa que revisa todas las secuencias de un archivo fastq y escribe los ids y secuencias de aquellas cuyos nucleotidos superan en su valor score un umbral dado.
+CATEGORY
+USAGE
+    python src/Filtro_calidad.py [-h] -i El path del archivo de entrada
+                             
+ARGUMENTS
+  -h, --help            show this help message and exit
+  -i El path del archivo de entrada, --input El path del archivo de entrada
+                        Archivo de secuencias de DNA en formato fastq
+  -u, --umbral  El numero de score al que se busca, sea mayor el score de todos los nucleotidos de las secuencias buscadas.
+SEE ALSO
+'''
+import argparse
+from Bio import SeqIO
+import numpy as np
+
+parser = argparse.ArgumentParser(
+    description=" Este programa revisa las secuencias de un archivo fastq e imprime a pantalla cuantas de ellas superan un umbral de calidad dado por el usuario en todos sus nucleotidos, además de guardarlas en un archivo nuevo con sus ids ")
+
+parser.add_argument("-i", "--input",
+                    metavar="El path del archivo de entrada",
+                    help="Archivo de secuencias de DNA en formato fastq",
+                    required=True)
+
+parser.add_argument("-u", "--umbral",
+                    help="El umbral requerido para cada nucleotido del archivo",
+                    required=True,
+                    type=int)
+
+
+args = parser.parse_args()
+
+# Funcion que realiza la comparacion de los valores score conn umbral
+
+
+def filtro_calidad(archivo, umbral):
+    # Se inicializa un contador
+    i = 0
+    ids = []
+    # Se itera sobre cada registro del archivo dado y se revisa que todas las scores de la secuencia sean mayor al umbral
+    for record in SeqIO.parse(archivo, "fastq"):
+        if(all(score > umbral for score in record.letter_annotations["phred_quality"])):
+            ids.append("%s" % (record.id))
+            i += 1
+    # Se imprime el numero de secuencias exitosas
+    print("El numero de secuencias que poseen nucleotidos que superan el umbral requerido es de:")
+    print(i)
+
+    # Se abre un archivo para escribir en el los registros de las secuencias exitosas, cuyos ids
+    # estan en la lista ids, utilizada para compararse con el archivo original.
+    with open("./secuencias.fastq", "w") as output:
+        for record in SeqIO.parse(archivo, "fastq"):
+            if(record.id in ids):
+                SeqIO.write(record, output, "fastq")
+
+
+filtro_calidad(args.input, args.umbral)

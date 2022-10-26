@@ -1,0 +1,29 @@
+'''NAME
+virus_gb
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+DESCRIPTION
+Programa que obtiene las informacion resumida de un archivo genbank dado, en especifico las secuencias del gen L.
+CATEGORY
+USAGE
+                             
+ARGUMENTS
+None
+SEE ALSO
+'''
+from Bio import SeqIO
+from Bio import Seq
+archivo = r"C:\Users\andre\Downloads\Archivos_clase2 (1)\virus.gb"
+
+# Se obtienen del archivo las features correspondientes al nombre del gen y sus posiciones de incio y final
+for gb_record in SeqIO.parse(archivo, "genbank"):
+    print("gene:", gb_record.features[9].qualifiers["gene"])
+    # Se obtiene la secuencia del gen
+    secuencia = gb_record.seq[gb_record.features[9].location.nofuzzy_start:
+                              gb_record.features[9].location.nofuzzy_end]
+    # Se transcribe y traduce el gen
+    print("DNA:", secuencia)
+    print("RNA:", secuencia.transcribe())
+    print("PROT:", secuencia.translate())

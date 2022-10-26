@@ -1,0 +1,67 @@
+''NAME
+Resumen_gb
+VERSION
+1.0
+AUTHOR
+Andres Rivera Ramirez
+DESCRIPTION
+Programa que obtiene las informacion resumida de un archivo genbank dado, a traves de una lista de genes que se buscaran en el archivo, ambos por paso de argumentos.
+CATEGORY
+USAGE
+    python src/Resumen_gb -i "path/archivo.gb" -l "A" "B" "C"
+                             
+ARGUMENTS
+  -h, --help            show this help message and exit
+  -i El path del archivo de entrada, --input El path del archivo de entrada
+                        Archivo de secuencias de DNA en formato genbank
+  -l, --lista Los nombres de los genes que se buscaran en el archivo
+SEE ALSO
+'''
+from Bio import SeqIO
+from Bio import Seq
+import argparse
+
+parser = argparse.ArgumentParser(
+    description=" Este programa recibe el nombre de un archivo genbank y una lista con los genes buscados y regresa el nombre del organismo, país de la muestra, número del aisaldo, nombre de cada gen, proteína que produce, los primeros 15 nucleotidos de l secuencia,  ")
+
+parser.add_argument("-i", "--input",
+                    metavar="El path del archivo de entrada",
+                    help="Archivo en formato genbank",
+                    required=True)
+
+parser.add_argument("-l", "--lista",
+                    help="Lista con los nombres de los genes en formato genbank",
+                    required=False,
+                    type=list,
+                    nargs='+')
+
+args = parser.parse_args()
+
+
+def resumen(path, lista):
+    l_pares = []
+    # Se extraen del archivo las anotaciones correspondientes al organismo, fecha, numero de isolate y pais.
+    for gb_record in SeqIO.parse(path, 'genbank'):
+        print("Organismo:", gb_record.annotations['organism'])
+        print("Fecha:", gb_record.annotations['date'])
+        print("Aislado:", gb_record.features[0].qualifiers["isolate"])
+        print("Pais:", gb_record.features[0].qualifiers['country'])
+        # Se llena una lista con los numeros pares desde el dos hasta el ultimo numero par de acuerdo con la
+        # longitud de features
+        for num in range(2, len(gb_record.features)):
+            if(num % 2 == 0):
+                l_pares.append(num)
+        # Por cada numero en la lista se buscara en features CDS si el gen en este se encuentra en la lista de genes a buscar
+        for i in l_pares:
+            if(gb_record.features[i].qualifiers["gene"] in lista):
+                print("gene:", gb_record.features[i].qualifiers["gene"])
+                # Se obtiene la secuencia corrspondiente al gen
+                secuencia = gb_record.seq[gb_record.features[i].location.nofuzzy_start:(
+                    gb_record.features[i].location.nofuzzy_start + 15)]
+                print("DNA:", secuencia)
+                # Se imprimen la secuencia transcrita y el nombre de la proteina.
+                print("RNA:", secuencia.transcribe())
+                print("Proteina:", gb_record.features[i].qualifiers["product"])
+
+
+resumen(args.input, args.lista)

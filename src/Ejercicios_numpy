@@ -1,0 +1,22 @@
+# Ejercicios de numpy
+import numpy as np
+# Se genera el array
+produccion_gmL = np.genfromtxt(
+    r'C:\Users\andre\Downloads\prod_gml.csv', delimiter=',')
+produccion_gL = produccion_gmL * 1000
+print(produccion_gL)
+costo_ind = np.genfromtxt(
+    r"C:\Users\andre\Downloads\ind_cost.csv", delimiter=',')
+costo_ind_30 = costo_ind * 1.75
+costo_ind_35 = costo_ind * 0.8
+print(costo_ind_30, '\n', costo_ind_35)
+
+# Ejercicio 2
+
+cost_prod_30 = costo_ind * 1.75 / produccion_gL[:, 0]
+cost_prod_35 = costo_ind * 0.8 / produccion_gL[:, 1]
+print(cost_prod_30, '\n', cost_prod_35)
+
+# Ejercicio 3
+# Se accede al array con un booleano
+print((cost_prod_30 - cost_prod_35) < 0)

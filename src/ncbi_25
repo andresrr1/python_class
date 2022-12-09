@@ -1,0 +1,132 @@
+'''
+NAME
+	ncbi_25.py
+    
+VERSION
+    1.0
+    
+AUTHOR
+	Andres Rivera
+    
+DESCRIPTION
+    Programa que obtiene todos los articulo que citan a un articulo original, sus ids y resumenes. 
+CATEGORY
+USAGE
+    py ncbi_25.py -t (raw term) 
+'''
+import argparse
+from ncbi_18 import gen_term, db_search
+from Bio import Entrez
+
+
+parser = argparse.ArgumentParser(
+    description="")
+
+parser.add_argument("-OG", "--orgen",
+                    help="El organismo y sus genes con el formato siguiente: 'Organismo1: Gene1,Gene2 ; Organismo2: Gene3,Gene4' ",
+                    required=True)
+args = parser.parse_args()
+
+Entrez.email = "andresrr@lcg.unam.mx"
+
+
+# Funcion para obtener titulos
+def art_titles(Dbs):
+    
+    Articulos = {}
+    i = 0
+
+    for Db in Dbs:
+        
+        Titles = []
+        # Solo se procede si la busqueda dio resultados
+        if ('pubmed' in list(Db.keys())):
+
+            #Se recorren todas las IDs
+            for ID in Db['pubmed']:
+
+                #Se obtiene el titulo y se guarda
+                Articulo = Entrez.read(Entrez.efetch(db='pubmed', id = ID))
+                Titles += [Articulo['PubmedArticle'][0]['MedlineCitation']['Article']['ArticleTitle']]
+        
+        # Se guarda el vector de titulos
+        Articulos['Titulos'] = Titles
+        Articulos['IDS'] = Db['pubmed'] 
+    
+    return(Articulos)
+
+
+
+def extract(Articulos):
+
+    # Se obtienen todos los articulos citados
+    results = Entrez.read(Entrez.elink(dbfrom="pubmed", db="pubmed", id=Articulos['IDS'], LinkName='pubmed_pubmed_refs'))
+
+    #Vector que guardara un vector con el titulo del articulo y un diccionario que tendra los ids titulos y resumenes de los articulos que citan al original
+    ArticuloRefs = []
+    i= 0
+
+    
+    # Vamos de uno en uno para ver el resultado de cada articulo, que contiene los articulos que lo citan.
+    for result in results:
+        
+        TituRefs = {}  
+        Refs = []
+
+        # Diccionario con los IDs
+        for link in result['LinkSetDb']:
+            
+            
+            if len(link) > 0:
+                
+                # articulo por articulo
+                for id in link['Link']:
+                    
+                    # Diccionario para titulo, ID y resumen
+                    TituAbstraRef = {}
+
+                    try:
+                        
+                        #efetch del articulo
+                        Articulo = Entrez.read(Entrez.efetch(db='pubmed', id = id['Id'], api_key = '2c4f67def001c89be6a3d681c1da87fc8409'))
+
+                        # Se guarda el id
+                        TituAbstraRef['Id'] = id['Id']
+
+                        #Se pregunta por el abstract
+                        if 'abstract' in list(Articulo['PubmedArticle'][0]['MedlineCitation']['Article'].keys()):
+                            TituAbstraRef['Abstract'] = Articulo['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText'][0]
+                        else:
+                            TituAbstraRef['Abstract'] = 'No abstract'
+                        
+                        # titulo del articulo
+                        TituAbstraRef['Titulo'] = Articulo['PubmedArticle'][0]['MedlineCitation']['Article']['ArticleTitle']
+
+                        
+                        Refs += [TituAbstraRef]
+
+                    except:
+                        pass
+                    
+            
+            # Articulo original
+            TituRefs['Titulo'] = Articulos['Titulos'][i]
+           
+            TituRefs['Referencias'] = Refs
+            #Vector principal
+            ArticuloRefs += [TituRefs]
+            
+            
+            i+=1
+
+    return(ArticuloRefs)
+    
+    
+terminos = gen_term(args.orgen)
+Dbs = db_search(terminos)
+
+articles = art_titles(Dbs)
+
+referencias = extract(articles)
+
+print(referencias)

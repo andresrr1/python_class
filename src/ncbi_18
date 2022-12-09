@@ -1,0 +1,86 @@
+'''
+NAME
+	ncbi_18.py
+    
+VERSION
+    1.0
+    
+AUTHOR
+	Andres Rivera	
+    
+DESCRIPTION
+Programa que genera un termino y realiza una búsqueda en una base de datos NCBI de acuerdo a un organismo y a una lista de genes para cada organismo.
+CATEGORY
+USAGE
+    py ncbi_18.py -OG (raw term) 
+'''
+
+import re
+from pprint import pprint
+from Bio import Entrez 
+import argparse
+
+parser = argparse.ArgumentParser(
+    description="")
+
+parser.add_argument("-OG", "--orgen",
+                    help="Introduce el organismo y los genes de este en formato 'Organismo1: Gene1,Gene2 ; Organismo2: Gene3,Gene4' ",
+                    required=True)
+                    
+Entrez.email = "andresrr@lcg.unam.mx"
+
+# Funcion que da formato
+def gen_term(entradas):
+
+    # Lista en la que se guarda cada organismo y sus genes
+    terms=[]
+
+    #  Se repite el  formateo para cada entrada
+    for entrada in entradas.split(';'):
+        
+        entrada = entrada.split(":")
+        term = entrada[0] + "[Orgn] AND ("
+
+        # Se introduce cada gen formateado uno a uno
+        i = True
+        for gen in entrada[1].replace(" ","").split(','):
+            if i:
+                term += gen+'[Gene]'
+            else:
+                term += " OR " + gen+'[Gene]' 
+            i = False
+
+        term += ")"
+        terms += [term]
+
+    return(terms)
+    
+    # Funcion para buscar en las bases de datos
+def db_search(terminos):
+
+    # Lista donde se guardan los ids de las bases de datos segun el organismo, sera una lista de diccionarios de listas
+    DbIDS = []
+
+    for termino in terminos:
+        record = Entrez.read(Entrez.egquery(term = termino))
+        DictDbs = {}
+        Dbs=[]
+
+        # Se verifica que se cumpla el criterio
+        for row in record["eGQueryResult"]:
+            if (row["Count"] != "Error"):
+                if(int(row["Count"]) > 1):
+                    Dbs += [row["DbName"]]
+        
+        for Db in Dbs:
+            DictDbs[Db] = Entrez.read(Entrez.esearch(db= Db, term=termino))["IdList"]
+    
+        DbIDS+= [DictDbs]
+
+    return(DbIDS)
+    
+term = args.orgen
+
+term = gen_term(term)
+
+Dbs = db_search(term)
